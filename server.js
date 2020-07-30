@@ -15,8 +15,8 @@ app.use(bodyParser.json())
 
 // Routes
 // =============================================================
+require('./routing/html-routes.js')(app);
 require('./routing/api-routes.js')(app);
-require('./routing/html-routes.js.js')(app);
 
 
 // Starts the server to begin listening
