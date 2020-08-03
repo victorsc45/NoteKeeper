@@ -20,52 +20,40 @@ const dbDir = require('./db/db.json');
 // =============================================================
 app.get('api/notes', function (req, res) {
 
-    res.sendFile(path.join(__dirname, "./db/db.json"));
+    res.sendFile(path.join(__dirname, './db/db.json'));
 });
 
+app.post('/api/notes', function (req, res) {
+    let readNotes = JSON.parse(fs.readFileSync('./db/db.json', "utf8"));
+    let notated = req.body;
+    let newID = readNotes.length.toString();
+    notated.id = newID;
+    readNotes.push(notated);
 
-app.post('api/notes', function (req, res) {
-
-    let addedNote = req.body;
-    if (dbDir.length === 0) {
-        addedNote.id = 1;
-    } else {
-        const newID = dbDir[dbDir.length - 1].id + 1;
-        addedNote.id = newID;
-    }
-    dbDir.push(addedNote);
-
-    fs.writeFileSync('./db/db.json', JSON.stringify(dbDir));
-    res.json(dbDir);
-
-
+    fs.writeFileSync('./db/db.json', JSON.stringify(readNotes));
+    console.log("Note saved to db.json. Content: ", notated);
+    res.json(readNotes);
 });
-app.delete('api/notes/:id', function (req, res) {
-
-    let notated = JSON.parse(fs.readFileSync('./db/db.json', 'utf-8'));
-
-
-    let noteId = parseInt(req.params.id);
-
-    notated.forEach((notated, index) => {
-        if (notated.id === noteId) {
-            notated.id.splice(index, 1);
-        }
-    });
-    dbDir = notated;
-    fs.writeFileSync('./db/db.json', JSON.stringify(dbDir));
-    res.json(dbDir);
+app.delete("/api/notes/:id", (req, res) => {
+    let noteID = parseInt(req.params.id);
+    const selectedID = (item) => item.id === noteID;
+    dbDir.splice(dbDir.findIndex(selectedID), 1);
+    fs.writeFileSync("./db/db.json", JSON.stringify(dbDir));
+    response.json(dbDir);
 });
+
 
 
 // File routes
 app.get('/notes', function (req, res) {
-    res.sendFile(path.join(__dirname, '/public/notes.html'));
+
+    res.sendFile(path.join(__dirname, './public/notes.html'));
 });
 
 
 app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, '/public/index.html'));
+
+    res.sendFile(path.join(__dirname, './public/index.html'));
 });
 // Starts the server to begin listening
 // =============================================================
