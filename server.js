@@ -10,16 +10,17 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
 const dbDir = require('./db/db.json');
 
 
 // Routes API
 // =============================================================
 app.get('api/notes', function (req, res) {
-    res.json(dbDir);
+
+    res.sendFile(path.join(__dirname, "./db/db.json"));
 });
 
 
@@ -46,24 +47,25 @@ app.delete('api/notes/:id', function (req, res) {
 
     let noteId = parseInt(req.params.id);
 
-    notated.id.forEach((notated, index) => {
-        if (notataed.id === noteId) {
+    notated.forEach((notated, index) => {
+        if (notated.id === noteId) {
             notated.id.splice(index, 1);
         }
     });
-    fs.writeFileSync('./db/db.json', JSON.stringify(notated));
-    res.json(notated);
+    dbDir = notated;
+    fs.writeFileSync('./db/db.json', JSON.stringify(dbDir));
+    res.json(dbDir);
 });
 
 
 // File routes
 app.get('/notes', function (req, res) {
-    res.sendFile(path.join(__dirname, './public/notes.html'));
+    res.sendFile(path.join(__dirname, '/public/notes.html'));
 });
 
 
 app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, './public/index.html'));
+    res.sendFile(path.join(__dirname, '/public/index.html'));
 });
 // Starts the server to begin listening
 // =============================================================
