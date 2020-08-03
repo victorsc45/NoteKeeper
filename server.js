@@ -3,7 +3,7 @@
 const express = require('express');
 const path = require('path');
 
-
+const fs = require('fs');
 // Sets up the Express App
 // =============================================================
 const app = express();
@@ -29,7 +29,8 @@ app.post('api/notes', function (req, res) {
     if (dbDir.length === 0) {
         addedNote.id = 1;
     } else {
-        addedNote.id++;
+        const newID = dbDir[dbDir.length - 1].id + 1;
+        addedNote.id = newID;
     }
     dbDir.push(addedNote);
 
