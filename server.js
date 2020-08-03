@@ -1,9 +1,9 @@
 // Dependencies
 // =============================================================
-const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
-
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const { json } = require('express')
 // Sets up the Express App
 // =============================================================
 const app = express();
@@ -15,8 +15,8 @@ app.use(bodyParser.json())
 
 // Routes
 // =============================================================
+require('./routing/api-routes.js')(app);
 require('./routing/file-routes.js')(app);
-
 
 
 // Starts the server to begin listening
