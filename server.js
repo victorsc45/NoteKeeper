@@ -8,7 +8,7 @@ const fs = require('fs');
 // =============================================================
 const app = express();
 // local and deployed operating ports
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 // express using statements
 app.use(express.static('public'));
 app.use(express.json());
