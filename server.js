@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// variable for the db connection to json file
+// variable for the db connection to the json file
 const dbDir = require('./db/db');
 
 // File route for notes html page of the view
