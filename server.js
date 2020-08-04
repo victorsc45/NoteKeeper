@@ -41,7 +41,8 @@ app.post('/api/notes', (req, res) => {
 
     fs.writeFileSync('./db/db.json', JSON.stringify(readNotes));
     console.log("Note saved to db.json. Content: ", notated);
-    res.json(readNotes);
+    console.log('read all notes', dbDir);
+    res.json(dbDir);
 });
 // api to delete the notes entered to db
 app.delete("/api/notes/:id", (req, res) => {
