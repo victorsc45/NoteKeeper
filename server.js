@@ -3,7 +3,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-
+//const uuid = require('uuid');
 // Sets up the Express App
 // =============================================================
 const app = express();
@@ -14,8 +14,8 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // variable for the db connection to the json file
-const dbDir = require('./db/db');
-
+const dbDir = () => { return JSON.parse(fs.readFileSync('./db/db.json', "utf8")) };
+//console.log('this is the db', dbDir);
 // File route for notes html page of the view
 app.get("/", function (req, res) {
     res.json(path.join(__dirname, "public/index.html"));
@@ -29,11 +29,12 @@ app.get('/notes', (req, res) => {
 // Routes API
 // =============================================================
 app.get('/api/notes', (req, res) => {
-    res.json(dbDir);
+    const getter = dbDir();
+    res.json(getter);
 });
 // api to post new notes to db
 app.post('/api/notes', (req, res) => {
-    let readNotes = JSON.parse(fs.readFileSync('./db/db.json', "utf8"));
+    let readNotes = dbDir();
     let notated = req.body;
     let newID = readNotes.length.toString();
     notated.id = newID;
@@ -41,16 +42,20 @@ app.post('/api/notes', (req, res) => {
 
     fs.writeFileSync('./db/db.json', JSON.stringify(readNotes));
     console.log("Note saved to db.json. Content: ", notated);
-    console.log('read all notes', dbDir);
-    res.json(dbDir);
+    console.log('read all notes', readNotes);
+    res.json(readNotes);
 });
 // api to delete the notes entered to db
 app.delete("/api/notes/:id", (req, res) => {
+    let deleter = dbDir();
     let noteID = parseInt(req.params.id);
     const selectedID = (item) => item.id === noteID;
-    dbDir.splice((dbDir.findIndex(selectedID)), 1);
-    fs.writeFileSync("./db/db.json", JSON.stringify(dbDir));
-    res.json(dbDir);
+    if (noteID > -1) {
+        deleter.splice(selectedID, 1);
+        console.log('deleter', deleter);
+    }
+    fs.writeFileSync("./db/db.json", JSON.stringify(deleter));
+    res.json(deleter);
 });
 // catch all for index.html view
 app.get('*', (req, res) => {
